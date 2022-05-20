@@ -2,6 +2,10 @@
 
 namespace App\Services;
 
+use App\Models\Course;
+use App\Models\CourseType;
+use App\Models\DaysTime;
+use App\Models\Room;
 use App\Services\DataServiceInterface;
 
 class DataService implements DataServiceInterface
@@ -35,23 +39,25 @@ class DataService implements DataServiceInterface
             [8, ["15:30", "17:00"]],
         ];
     }
-
     public function getDaysTime()
     {
-        return [
-            ["شنبه", [0, 1, 2, 5, 6], 0],
-            ["یکشنبه", [3, 4, 7, 8], 1],
-            ["دوشنبه", [0, 1, 2, 5, 6], 2],
-            ["سه شنبه", [3, 4, 7, 8], 3],
-            ["چهارشنبه", [0, 1, 2, 5, 6], 4],
-        ];
+        return DaysTime::all()->map(function (DaysTime $daysTime) {
+            return [
+                $daysTime->name,
+                $daysTime->hours,
+                $daysTime->id-1,
+            ];
+        });
     }
 
     public function getClasses()
     {
-        return [
-            ["A", 0], ["B", 0], ["c", 0], ["d", 1], ["e", 1], ["f", 2], ["g", 2], ["h", 3]
-        ];
+        return Room::all()->map(function (Room $room) {
+            return [
+                $room->name,
+                $room->equipped,
+            ];
+        })->toArray();
     }
 
     public function getLectures()
@@ -168,66 +174,38 @@ class DataService implements DataServiceInterface
 
     public function getGeneralLessons()
     {
-        return [
-            [0, 0, -1, []],
-            [1, 0, -1, []],
-            [2, 0, -1, []],
-            [3, 0, -1, []],
-            [4, 0, -1, []],
-            [5, 0, -1, []],
-            [6, 0, -1, []],
-            [7, 0, -1, []],
-            [8, 0, -1, []],
-        ];
+        return CourseType::whereName("general")->with("courses")->first()->courses->map(function (Course $course) {
+            return [
+                $course->id - 1,
+                $course->equipped,
+                $course->pre,
+                $course->need,
+            ];
+        })->toArray();
     }
 
     public function getBasicLessons()
     {
-        return [
-            [9, 0, -1, []],
-            [10, 0, -1, []],
-            [11, 0, 10, []],
-            [12, 0, 11, []],
-            [13, 0, 12, []],
-            [14, 0, -1, []],
-            [15, 0, 9, [14, 10]],
-            [16, 0, -1, [14]],
-            [17, 0, -1, []],
-            [18, 0, -1, []],
-            [19, 0, -1, []],
-            [20, 0, -1, []],
-        ];
+        return CourseType::whereName("basic")->with("courses")->first()->courses->map(function (Course $course) {
+            return [
+                $course->id - 1,
+                $course->equipped,
+                $course->pre,
+                $course->need,
+            ];
+        })->toArray();
     }
 
     public function getMainCourses()
     {
-        return [
-            [21, 1, -1, []],
-            [22, 1, -1, []],
-            [23, 1, 22, []],
-            [24, 1, 23, []],
-            [25, 1, 24, []],
-            [26, 1, -1, []],
-            [27, 1, -1, []],
-            [28, 1, -1, []],
-            [29, 1, -1, []],
-            [30, 1, -1, []],
-            [31, 2, -1, []],
-            [32, 2, -1, []],
-            [33, 2, -1, []],
-            [34, 2, -1, []],
-            [35, 2, -1, []],
-            [36, 2, -1, []],
-            [37, 0, -1, []],
-            [38, 0, -1, []],
-            [39, 0, -1, []],
-            [40, 0, -1, []],
-            [41, 0, -1, []],
-            [42, 0, -1, []],
-            [43, 0, -1, []],
-            [44, 0, -1, []],
-            [45, 0, -1, []],
-        ];
+        return CourseType::whereName("main")->with("courses")->first()->courses->map(function (Course $course) {
+            return [
+                $course->id - 1,
+                $course->equipped,
+                $course->pre,
+                $course->need,
+            ];
+        })->toArray();
     }
 
     public function getStudentGroups()

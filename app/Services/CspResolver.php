@@ -32,8 +32,7 @@ class CspResolver implements CspResolverInterface
 
     public function calculate()
     {
-        $errorArray = array();
-
+        $errorArray = [];
         $hosh_daysTime = $this->data->getDaysTime();
         $hosh_classes = $this->data->getClasses();
         $hosh_professors = $this->data->getLectures();

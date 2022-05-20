@@ -43,9 +43,20 @@ services:
         networks:
             - sail
         healthcheck:
-            test: ["CMD", "mysqladmin", "ping", "-p${DB_PASSWORD}"]
+            test: [ "CMD", "mysqladmin", "ping", "-p${DB_PASSWORD}" ]
             retries: 3
             timeout: 5s
+    pma:
+        image: 'phpmyadmin:latest'
+        container_name: 'pma'
+        ports:
+            - 8090:80
+        links:
+            - "mysql:db"
+        depends_on:
+            - mysql
+        networks:
+            - sail
 networks:
     sail:
         driver: bridge
