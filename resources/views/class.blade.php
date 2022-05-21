@@ -1,37 +1,13 @@
 @extends('layout.app')
 @section('title', 'کلاس ها')
 @section('content')
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h4 class="panel-title">
-                <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">جداول کلاس ها</a>
-            </h4>
-        </div>
-        <div id="collapse1" class="panel-collapse collapse in">
-            <div class="panel-body">
-                <?php
-                            $class_list_array = $finalResponse[0][0]["schedules"];
-                            $classId = -1 ;
-                            foreach ($class_list_array as $class_info) {
-                                $class_name = $class_info["info"][0];
-                                $classId++;
-                            ?>
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4 class="panel-title">
-                            <a data-toggle="collapse" data-parent="#collapse1" href="#collapse1_<?php echo $classId; ?>">کلاس :
-                                <?php echo $class_name; ?></a>
-                        </h4>
-                    </div>
-                    <div id="collapse1_<?php echo $classId; ?>" class="panel-collapse collapse">
-                        <div class="panel-body">
-                            <p>
-                                جدول مربوط به اطلاعات کلاس ها
-                            </p>
-                            <table>
-                                <tr>
-                                    <th></th>
-                                    <?php
+    <p>
+        جدول مربوط به اطلاعات کلاس ها
+    </p>
+    <table>
+        <tr>
+            <th></th>
+            <?php
                                             /* گرفتن اطلاعات مربوط به ساعات تشکیل کلاس */
                                             foreach ($hosh_times_of_day as $timesOfDay) {
                                                 $dayTimeTitle = "";
@@ -43,20 +19,20 @@
                                                 }
 
                                                 ?>
-                                    <th><?php echo $dayTimeTitle; ?></th>
-                                    <?php } ?>
-                                </tr>
-                                <?php
+            <th><?php echo $dayTimeTitle; ?></th>
+            <?php } ?>
+        </tr>
+        <?php
                                             $daysCounter = -1;
                                             foreach ($hosh_daysTime as $hosh_daysTimeItem) {
                                                 $daysCounter ++ ;
                                                 ?>
-                                <tr>
-                                    <!-- عنوان روز -->
-                                    <td>
-                                        <p style=""><?php echo $hosh_daysTimeItem[0]; ?></p>
-                                    </td>
-                                    <?php
+        <tr>
+            <!-- عنوان روز -->
+            <td>
+                <p style=""><?php echo $hosh_daysTimeItem[0]; ?></p>
+            </td>
+            <?php
                                                     $mValidHour = -1;
 
                                                     foreach ($hosh_times_of_day as $timesOfDay) {
@@ -107,14 +83,14 @@
                                                                                     }
                                                                                 }
                                                                             ?>
-                                    <td class="<?php if ($timesOfDay[2] == 1) {
-                                        echo ' filter_day ';
-                                    } ?>">
-                                        <p><?php echo 'درس ' . $courseName; ?></p>
-                                        <p style=""><?php echo "کد ($courseCode)"; ?></p>
-                                        <p style=""><?php echo "استاد :‌ $prof_name"; ?></p>
-                                    </td>
-                                    <?php   $onceShown = 1 ;
+            <td class="<?php if ($timesOfDay[2] == 1) {
+                echo ' filter_day ';
+            } ?>">
+                <p><?php echo 'درس ' . $courseName; ?></p>
+                <p style=""><?php echo "کد ($courseCode)"; ?></p>
+                <p style=""><?php echo "استاد :‌ $prof_name"; ?></p>
+            </td>
+            <?php   $onceShown = 1 ;
                                                                         break; }
                                                                         }
                                                                     }
@@ -122,33 +98,25 @@
                                                             }
                                                         if( $findClass == 0 && $onceShown == 0) {
                                                             $onceShown =1 ?>
-                                    <td class="<?php if ($timesOfDay[2] == 1) {
-                                        echo ' filter_day ';
-                                    } ?>">
-                                        <p><?php echo '_'; ?></p>
-                                    </td>
-                                    <?php
+            <td class="<?php if ($timesOfDay[2] == 1) {
+                echo ' filter_day ';
+            } ?>">
+                <p><?php echo '_'; ?></p>
+            </td>
+            <?php
                                                         }
                                                     } else { ?>
-                                    <td class="<?php if ($timesOfDay[2] == 1) {
-                                        echo ' filter_day ';
-                                    } ?>" disabled>
-                                        <!-- background: red; -->
-                                    </td>
-                                    <?php }
+            <td class="<?php if ($timesOfDay[2] == 1) {
+                echo ' filter_day ';
+            } ?>" disabled>
+                <!-- background: red; -->
+            </td>
+            <?php }
                                                 } ?>
-                                </tr>
-                                <?php
+        </tr>
+        <?php
                                             }
                                             ?>
-                                <?php ?>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <?php
-                            } ?>
-            </div>
-        </div>
-    </div>
+        <?php ?>
+    </table>
 @endsection

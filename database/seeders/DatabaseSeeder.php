@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\StudentYear;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -18,6 +19,11 @@ class DatabaseSeeder extends Seeder
             RoomSeeder::class,
             CourseTypeSeeder::class,
             CourseSeeder::class,
+            LessonSeeder::class,
+            StudentYearSeeder::class,
+            DaysSeeder::class,
+            TimeSeeder::class,
+            LectureSeeder::class,
         ]);
     }
 }
