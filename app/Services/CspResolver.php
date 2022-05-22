@@ -26,47 +26,44 @@ class CspResolver implements CspResolverInterface
         // when school is open
         $daysTime = $this->data->getDaysTime();
 
-        $hosh_classes = $this->data->getClasses();
+        $classes = $this->data->getClasses();
 
-        // $hosh_professors = $this->data->getLectures();
+        // $professors = $this->data->getLectures();
         $lecturers = $this->data->getLecturers();
 
-        $hosh_lessons = $this->data->getLessons();
-        $hosh_general_lessons = $this->data->getGeneralLessons();
-        $hosh_basic_lessons = $this->data->getBasicLessons();
-        $hosh_main_courses = $this->data->getMainCourses();
-        $hosh_times_of_day = $this->data->getTimeOfDay();
-        $hosh_student_group = $this->data->getStudentGroups();
-        $hosh_student_group_course = $this->data->getStudentGroupCourse();
-        $hosh_professors_avalible_lessons = $this->data->getProfessorsAvalibleLessons();
+        $lessons = $this->data->getLessons();
+        $general_lessons = $this->data->getGeneralLessons();
+        $basic_lessons = $this->data->getBasicLessons();
+        $main_courses = $this->data->getMainCourses();
+        $times_of_day = $this->data->getTimeOfDay();
+        $student_group = $this->data->getStudentGroups();
+        $student_group_course = $this->data->getStudentGroupCourse();
+        $professors_avalible_lessons = $this->data->getProfessorsAvalibleLessons();
 
-        $TotalClassInWeek = count($hosh_classes) * $daysTime->reduce(function ($result, $day) {
+        $TotalClassInWeek = count($classes) * $daysTime->reduce(function ($result, $day) {
             return count($day[1]);
         });
 
-        $TotalCourseNo = $hosh_lessons->reduce(function ($result, $lesson) {
+        $TotalCourseNo = $lessons->reduce(function ($result, $lesson) {
             return $lesson[4];
         });
 
-        $lessonsListArray = [$hosh_general_lessons, $hosh_basic_lessons, $hosh_main_courses];
+        $lessonsListArray = [$general_lessons, $basic_lessons, $main_courses];
 
         if ($TotalCourseNo > $TotalClassInWeek) {
             array_push($errorArray, \trans("messages.over"));
         }
 
-        if (count($hosh_lessons) > $lecturers->count()) {
+        if (count($lessons) > $lecturers->count()) {
             array_push($errorArray, \trans("messages.not_enough"));
         }
 
-        $finalResponse = $this->engine->matchInfoTogether(
+        $finalResponse = $this->engine->mix(
             $daysTime,
-            $hosh_lessons,
+            $lessons,
             $lecturers,
-            $hosh_student_group,
-            $hosh_student_group_course,
-            $hosh_times_of_day,
-            $hosh_classes,
-            $hosh_professors_avalible_lessons,
+            $classes,
+            $professors_avalible_lessons,
             $lessonsListArray,
             $errorArray
         );

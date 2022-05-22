@@ -4,27 +4,27 @@ namespace App\Services;
 
 class CspEngine implements CspEngineInterface
 {
-    public function matchInfoTogether($hosh_daysTime, $hosh_lessons, $hosh_professors, $hosh_student_group, $hosh_student_group_course, $hosh_times_of_day, $hosh_classes, $hosh_professors_avalible_lessons, $lessonsListArray, $errorArray)
+    public function mix($daysTime, $lessons, $professors, $classes, $professors_avalible_lessons, $lessonsListArray, $errorArray)
     {
-        $tmpHosh_professors = $hosh_professors;
-        $matrixOrgLessons = $this->createEmptyMatrix($hosh_daysTime);
+        $tmpHosh_professors = $professors;
+        $matrixOrgLessons = $this->getMap($daysTime);
         $ArrayWeeklyClassSchedules = [];
-        for ($k = 0; $k < count($hosh_classes); $k++) {
-            $classInfo['info'] = $hosh_classes[$k];
+        for ($k = 0; $k < count($classes); $k++) {
+            $classInfo['info'] = $classes[$k];
             $classInfo['weekSchedule'] = $matrixOrgLessons;
             array_push($ArrayWeeklyClassSchedules, $classInfo);
         }
         $propDoWorkMatrix = [];
         $returnArray = [];
-        foreach ($hosh_lessons as $dars) {
+        foreach ($lessons as $dars) {
             $rowInfo = [];
             $idDars = $dars[0];
-            $groupId = $this->findLessonsGroupId($idDars, $lessonsListArray);
+            $groupId = $this->getGroupId($idDars, $lessonsListArray);
             $rowInfo['dars_id'] = $idDars;
             $rowInfo['group_id'] = $groupId;
-            $ArrayListOfAllProfCanTeach = $this->findAllProfessorsForOneCourse($hosh_professors_avalible_lessons, $hosh_professors, $idDars, $groupId, $hosh_professors_avalible_lessons, $hosh_professors);
+            $ArrayListOfAllProfCanTeach = $this->getCourseLecturers($professors_avalible_lessons, $professors, $idDars, $groupId, $professors_avalible_lessons, $professors);
             $rowInfo['profs_array'] = $ArrayListOfAllProfCanTeach;
-            $response_of_prof_finder = $this->findProfessorForCourse($tmpHosh_professors, $ArrayListOfAllProfCanTeach, $ArrayWeeklyClassSchedules, $propDoWorkMatrix, $dars);
+            $response_of_prof_finder = $this->finder($tmpHosh_professors, $ArrayListOfAllProfCanTeach, $ArrayWeeklyClassSchedules, $propDoWorkMatrix, $dars);
             $findOneTeacher = $response_of_prof_finder[0];
             if ($findOneTeacher > -1) {
                 $propDoWorkMatrix = $response_of_prof_finder[1];
@@ -44,7 +44,7 @@ class CspEngine implements CspEngineInterface
         return [$returnArrayResopnse, $errorArray];
     }
 
-    public function findProfessorForCourse($tmpHosh_professors, $ArrayListOfAllProfCanTeach, $ArrayWeeklyClassSchedules, $propDoWorkMatrix, $classInfo)
+    public function finder($tmpHosh_professors, $ArrayListOfAllProfCanTeach, $ArrayWeeklyClassSchedules, $propDoWorkMatrix, $classInfo)
     {
         $classId = $classInfo[0];
         $classPartsNo = $classInfo[4];
@@ -91,7 +91,7 @@ class CspEngine implements CspEngineInterface
                                     $hourId++;
 
                                     if ($hourScheules == -1) {
-                                        $retValue = $this->checkProfAvailable($profId, $tmpHosh_professors, $propDoWorkMatrixTmp, $hourId, $daysId, $classId, $k);
+                                        $retValue = $this->isAvailable($profId, $tmpHosh_professors, $propDoWorkMatrixTmp, $hourId, $daysId, $classId, $k);
                                         $findOneTeacherTmp = $retValue[0];
                                         if ($findOneTeacherTmp > -1) {
                                             $propDoWorkMatrixTmp = $retValue[1];
@@ -115,7 +115,7 @@ class CspEngine implements CspEngineInterface
         return [$findOneTeacher, $propDoWorkMatrix, $ArrayWeeklyClassSchedules];
     }
 
-    public function checkProfAvailable($profId, $tmpHosh_professors, $profListMatrix, $hourId, $dayId, $courseId, $classId)
+    public function isAvailable($profId, $tmpHosh_professors, $profListMatrix, $hourId, $dayId, $courseId, $classId)
     {
         $findProf = 0;
         $canAddThisClassForProf = -1;
@@ -129,19 +129,14 @@ class CspEngine implements CspEngineInterface
                 $findOtherClass = 0;
 
 
-                // گشتن دنبال اینکه آیا این استاد درس دیگری در این تایم دارد که تدریس کند یا خیر
                 foreach ($rowInfo[1] as $dayAndHour) {
                     if ($findOtherClass == 1)
                         break;
                     if ($dayAndHour[0] == $dayId && $dayAndHour[1] == $hourId) {
                         $findOtherClass = 1;
-                        //echo "1 : dayAndHour[0] : ".$dayAndHour[0]." ,dayId : $dayId ,dayAndHour[1] : ".$dayAndHour[1]." ,hourId : $hourId <br>";
-                    } else {
-                        //echo "0 : dayAndHour[0] : ".$dayAndHour[0]." ,dayId : $dayId ,dayAndHour[1] : ".$dayAndHour[1]." ,hourId : $hourId <br>";
                     }
                 }
 
-                // چک کردن اینکه اصلا آیا استاد در این تاریخ و ساعت در مرکز آموزش هست یا خیر
                 if ($findOtherClass == 0) {
                     $canTeachInThisDayAndHour = 0;
                     foreach ($tmpHosh_professors as $tmp_professors) {
@@ -165,11 +160,8 @@ class CspEngine implements CspEngineInterface
                     }
                 }
 
-                // در صورتی که این تایم برای استاد خالی است
                 if ($findOtherClass == 0) {
                     $canAddThisClassForProf = $profId;
-                    // افزودن یک زمان به ماتریس مربوط به اساتید
-                    /* ********** */
                     $infoClassRow = [];
                     array_push($infoClassRow, $dayId); // روز تشکیل کلاس
                     array_push($infoClassRow, $hourId); // ساعت تشکیل کلاس
@@ -181,14 +173,10 @@ class CspEngine implements CspEngineInterface
                     array_push($newRowInfo, $rowInfo[0]);
                     array_push($newRowInfo, $rowInfo[1]);
                     $profListMatrix[$loopNo] = $newRowInfo;
-                    /* $infoClassRow2 = [];
-                    array_push($infoClassRow2,$infoClassRow);
-                    array_push($rowInfo[1],$infoClassRow2); */
                 }
             }
         }
         if ($findProf == 0) {
-            // چک کردن اینکه استاد در این روز و ساعت در مرکز آموزش هست یا نیست
             $canTeachInThisDayAndHour = 0;
             foreach ($tmpHosh_professors as $tmp_professors) {
                 if ($tmp_professors[0] == $profId) {
@@ -208,8 +196,6 @@ class CspEngine implements CspEngineInterface
             }
             if ($canTeachInThisDayAndHour == 1) {
                 $canAddThisClassForProf = $profId;
-                // افزودن یک استاد به همراه زمانش به ماتریس مربوط به اساتید
-                /* ********** */
                 $infoClassRow = [];
                 $infoClassRow3 = [];
                 array_push($infoClassRow, $dayId); // روز تشکیل کلاس
@@ -227,7 +213,7 @@ class CspEngine implements CspEngineInterface
         return [$canAddThisClassForProf, $profListMatrix];
     }
 
-    public function findLessonsGroupId($lessonsId, $lessonsListArray)
+    public function getGroupId($lessonsId, $lessonsListArray)
     {
         $retVal = -1;
         $row = 0;
@@ -249,15 +235,14 @@ class CspEngine implements CspEngineInterface
         return $retVal;
     }
 
-    public function findAllProfessorsForOneCourse($hosh_professors_avalible_lessons, $hosh_professors, $lessonsId, $groupId)
+    public function getCourseLecturers($professors_avalible_lessons, $professors, $lessonsId, $groupId)
     {
-        //echo " [$lessonsId, $groupId] <br> ";
         $retArray = [];
         if ($lessonsId > -1) {
-            foreach ($hosh_professors as $professor) {
+            foreach ($professors as $professor) {
                 $canAdd = 0;
                 $findProf = 0;
-                foreach ($hosh_professors_avalible_lessons as $professorCanTeach) {
+                foreach ($professors_avalible_lessons as $professorCanTeach) {
                     if ($findProf == 0) {
                         if ($professorCanTeach[0] == $professor[0]) {
                             $findProf = 1;
@@ -274,10 +259,10 @@ class CspEngine implements CspEngineInterface
                     array_push($retArray, $professor[0]);
             }
             if ($groupId > -1) {
-                foreach ($hosh_professors as $professor) {
+                foreach ($professors as $professor) {
                     $canAdd = 0;
                     $findProf = 0;
-                    foreach ($hosh_professors_avalible_lessons as $professorCanTeach) {
+                    foreach ($professors_avalible_lessons as $professorCanTeach) {
                         if ($findProf == 0) {
                             if ($professorCanTeach[0] == $professor[0]) {
                                 $findProf = 1;
@@ -294,10 +279,10 @@ class CspEngine implements CspEngineInterface
                 }
             }
         } else if ($groupId > -1) {
-            foreach ($hosh_professors as $professor) {
+            foreach ($professors as $professor) {
                 $canAdd = 0;
                 $findProf = 0;
-                foreach ($hosh_professors_avalible_lessons as $professorCanTeach) {
+                foreach ($professors_avalible_lessons as $professorCanTeach) {
                     if ($findProf == 0) {
                         if ($professorCanTeach[0] == $professor[0]) {
                             $findProf = 1;
@@ -313,7 +298,7 @@ class CspEngine implements CspEngineInterface
                     array_push($retArray, $professor[0]);
             }
         } else {
-            foreach ($hosh_professors as $professor) {
+            foreach ($professors as $professor) {
                 if (!in_array($professor[0], $retArray))
                     array_push($retArray, $professor[0]);
             }
@@ -321,7 +306,7 @@ class CspEngine implements CspEngineInterface
         return $retArray;
     }
 
-    public function createEmptyMatrix($days)
+    public function getMap($days)
     {
         $rowNo = count($days);
         $matrix = [];
