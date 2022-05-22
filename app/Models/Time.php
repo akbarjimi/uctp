@@ -8,4 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Time extends Model
 {
     use HasFactory;
+
+    public $table = 'times';
+
+    public $guarded = [];
 }

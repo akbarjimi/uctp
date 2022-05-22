@@ -16,11 +16,11 @@ class CspResolver implements CspResolverInterface
     public function messages(?int $index = null)
     {
         $messages = [
-            "تعداد دروس ارائه شده از ظرفیت کلاس ها بیشتر می باشد",
-            "همه چیز عالی پیشرفت",
-            "تعداد اساتید برای ارائه این دروس کافی نمی باشد",
-            "برای کد درسی روبرو هیچ استادی یافت نشده است :‌",
-            ""
+            \trans("messages.over"),
+            \trans("messages.success"),
+            \trans("messages.not_enough"),
+            \trans("messages.not_found"),
+            \trans("messages.empty"),
         ];
 
         if ($index === null) {

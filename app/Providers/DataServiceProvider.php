@@ -10,11 +10,6 @@ use App\Services\CspResolver;
 
 class DataServiceProvider extends ServiceProvider
 {
-    public function register()
-    {
-        //
-    }
-
     public function boot()
     {
         $this->app->singleton(DataServiceInterface::class, DataService::class);

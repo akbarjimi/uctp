@@ -146,10 +146,19 @@ class DataService implements DataServiceInterface
     public function getStudentGroupCourse()
     {
         return [
-            [31, 0], [31, 1], [31, 2],
+            // groupStudentId - groupStudentTitle
+            [31, 0],
+            [31, 1],
+            [31, 2],
+
             [32, 0],
-            [33, 1], [33, 2],
-            [34, 1], [34, 2], [34, 3],
+
+            [33, 1],
+            [33, 2],
+
+            [34, 1],
+            [34, 2],
+            [34, 3],
         ];
     }
 }

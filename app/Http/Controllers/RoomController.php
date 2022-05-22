@@ -28,7 +28,7 @@ class RoomController extends Controller
         $class_info = $finalResponse[0][0]["schedules"][$key];
         $classId = $key;
 
-        return view("class", [
+        return view("room", [
             'finalResponse' => $finalResponse,
             'errorArray' => $errorArray,
             'messageArray' => $resolver->messages(),
