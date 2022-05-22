@@ -56,7 +56,18 @@
                 padding: 8px;
             }
 
-            tr:nth-child(even){background-color: #f2f2f2}
+            tr:nth-child(even){
+                background-color: #FFA500
+            }
+
+            tr:nth-child(odd){
+                background-color: #add8e6
+            }
+
+            tr:first-child{
+                background-color: cyan
+            }
+
         </style>
     </head>
     <body>
