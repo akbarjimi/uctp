@@ -61,7 +61,7 @@ class DataService implements DataServiceInterface
         })->toArray();
     }
 
-    public function getLectures()
+    public function getLecturers()
     {
         return Lecture::all()->map(function (Lecture $lecture) {
             return [
@@ -69,7 +69,7 @@ class DataService implements DataServiceInterface
                 $lecture->name,
                 $lecture->data,
             ];
-        })->toArray();
+        });
     }
 
     public function getProfessorsAvalibleLessons()
@@ -94,7 +94,7 @@ class DataService implements DataServiceInterface
                 $lesson->lesson_title,
                 $lesson->lesson_count,
             ];
-        })->toArray();
+        });
     }
 
     public function getGeneralLessons()

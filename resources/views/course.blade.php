@@ -50,8 +50,8 @@
                                                                         $mValidHour++;
                                                                         foreach ($class_info["weekSchedule"][$daysCounter] as $schedulesDaysInfo) {
                                                                             if($onceShown == 0){
-                                                                                $prof_info = array();
-                                                                                $arrayInfoClass = array();
+                                                                                $prof_info = [];
+                                                                                $arrayInfoClass = [];
                                                                                 $prof_name = "";
                                                                                 $prof_id = -1;
                                                                                 $prof_list = $finalResponse[0][0]["teachers_schedules"];

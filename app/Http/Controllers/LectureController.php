@@ -15,8 +15,8 @@ class LectureController extends Controller
         CspResolverInterface $resolver,
         string $lecture
     ) {
-        [$finalResponse, $errorArray] = $resolver->calculate();
-        $hosh_professors = $data->getLectures();
+        [$finalResponse, $errorArray] = $resolver->resolve();
+        $hosh_professors = $data->getLecturers();
 
         $prof_list = $finalResponse[0][0]["teachers_schedules"];
         foreach ($prof_list as $prof_info) {
@@ -36,7 +36,7 @@ class LectureController extends Controller
         return view("lecture", [
             'finalResponse' => $finalResponse,
             'errorArray' => $errorArray,
-            'messageArray' => $resolver->messages(),
+            'messageArray' => $this->messages(),
             'prof_name' => $prof_name,
             'prof_id' => $prof_id,
             'prof_info' => $prof_info,

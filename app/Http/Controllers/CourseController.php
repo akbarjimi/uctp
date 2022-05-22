@@ -15,12 +15,12 @@ class CourseController extends Controller
         string $id,
         string $title,
     ) {
-        [$finalResponse, $errorArray] = $resolver->calculate();
+        [$finalResponse, $errorArray] = $resolver->resolve();
 
         return view("course", [
             'finalResponse' => $finalResponse,
             'errorArray' => $errorArray,
-            'messageArray' => $resolver->messages(),
+            'messageArray' => $this->messages(),
             'groupStudentId' => $id,
             'groupStudentTitle' => $title,
 
@@ -28,7 +28,7 @@ class CourseController extends Controller
             'hosh_time_titles' => $data->getTimeTitles(),
             'hosh_daysTime' => $data->getDaysTime(),
             'hosh_classes' => $data->getClasses(),
-            'hosh_professors' => $data->getLectures(),
+            'hosh_professors' => $data->getLecturers(),
             'hosh_lessons' => $data->getLessons(),
             'hosh_professors_avalible_lessons' => $data->getProfessorsAvalibleLessons(),
             'hosh_general_lessons' => $data->getGeneralLessons(),

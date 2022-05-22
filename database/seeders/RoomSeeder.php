@@ -11,7 +11,7 @@ class RoomSeeder extends Seeder
     public function run()
     {
         $rooms = [
-            ["A", 0], ["B", 0], ["C", 0], ["D", 1], ["E", 1], ["F", 2], ["G", 2], ["H", 3]
+            ["الف", 0], ["ب", 0], ["پ", 0], ["ث", 1], ["ج", 1], ["چ", 2], ["ح", 2], ["خ", 3]
         ];
 
         foreach ($rooms as $room) {

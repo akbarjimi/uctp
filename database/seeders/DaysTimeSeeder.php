@@ -11,11 +11,11 @@ class DaysTimeSeeder extends Seeder
     public function run()
     {
         $daystimes = [
-            ["Saturday", [0, 1, 2, 5, 6]],
-            ["Sunday", [3, 4, 7, 8]],
-            ["Monday", [0, 1, 2, 5, 6]],
-            ["Thursday", [3, 4, 7, 8]],
-            ["Wednesday", [0, 1, 2, 5, 6]],
+            ["شنبه", [0, 1, 2, 5, 6]],
+            ["یکشنبه", [3, 4, 7, 8]],
+            ["دوشنبه", [0, 1, 2, 5, 6]],
+            ["سه شنبه", [3, 4, 7, 8]],
+            ["چهارشنبه", [0, 1, 2, 5, 6]],
         ];
 
         foreach ($daystimes as $daystime) {

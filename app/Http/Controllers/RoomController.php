@@ -16,7 +16,7 @@ class RoomController extends Controller
         CspResolverInterface $resolver,
         string $room
     ){
-        [$finalResponse, $errorArray] = $resolver->calculate();
+        [$finalResponse, $errorArray] = $resolver->resolve();
 
         $key = 0;
         foreach ($finalResponse[0][0]["schedules"] as $index => $value) {
@@ -31,7 +31,7 @@ class RoomController extends Controller
         return view("room", [
             'finalResponse' => $finalResponse,
             'errorArray' => $errorArray,
-            'messageArray' => $resolver->messages(),
+            'messageArray' => $this->messages(),
             'class_info' => $class_info,
             'classId' => $classId,
 
@@ -39,7 +39,7 @@ class RoomController extends Controller
             'hosh_time_titles' => $data->getTimeTitles(),
             'hosh_daysTime' => $data->getDaysTime(),
             'hosh_classes' => $data->getClasses(),
-            'hosh_professors' => $data->getLectures(),
+            'hosh_professors' => $data->getLecturers(),
             'hosh_lessons' => $data->getLessons(),
             'hosh_professors_avalible_lessons' => $data->getProfessorsAvalibleLessons(),
             'hosh_general_lessons' => $data->getGeneralLessons(),
