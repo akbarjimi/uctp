@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-
+use App\Models\Room;
 use App\Services\CspResolverInterface;
 use App\Services\DataServiceInterface;
 use Illuminate\Http\Request;
@@ -10,6 +10,11 @@ use Illuminate\Support\Arr;
 
 class RoomController extends Controller
 {
+    public function index()
+    {
+        return \view("rooms.index")->with("rooms", Room::all());
+    }
+
     public function show(
         Request $request,
         DataServiceInterface $data,

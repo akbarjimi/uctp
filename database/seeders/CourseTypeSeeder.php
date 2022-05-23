@@ -10,14 +10,24 @@ class CourseTypeSeeder extends Seeder
     public function run()
     {
         $types = [
-            "general",
-            "basic",
-            "main",
+            [
+                "general",
+                "عمومی",
+            ],
+            [
+                "basic",
+                "پایه",
+            ],
+            [
+                "main",
+                "اصلی",
+            ],
         ];
 
         foreach ($types as $type) {
             CourseType::create([
-                "name" => $type,
+                "name" => $type[0],
+                "alias" => $type[1],
             ]);
         }
     }

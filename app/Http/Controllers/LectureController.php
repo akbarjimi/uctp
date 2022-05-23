@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Lecture;
 use App\Services\CspResolverInterface;
 use App\Services\DataServiceInterface;
 use Illuminate\Http\Request;
@@ -9,6 +10,12 @@ use Illuminate\Support\Arr;
 
 class LectureController extends Controller
 {
+    public function index()
+    {
+        return \view("lectures.index")->with("lectures", Lecture::all());
+    }
+
+
     public function show(
         Request $request,
         DataServiceInterface $data,
@@ -19,10 +26,10 @@ class LectureController extends Controller
         $professors = $data->getLecturers();
 
         $prof_list = $finalResponse[0][0]["teachers_schedules"];
+        $prof_name = null;
         foreach ($prof_list as $prof_info) {
             $prof_id = $prof_info[0]; // id ostad
             if ($prof_id == $lecture) {
-                $prof_name = "";
                 foreach ($professors as $all_prof_info) {
                     if ($prof_id == $all_prof_info[0]) {
                         $prof_name = $all_prof_info[1];
@@ -31,6 +38,10 @@ class LectureController extends Controller
                 }
                 break;
             }
+        }
+
+        if ($prof_name === null) {
+            return back()->withErrors(["برنامه ندارد"]);
         }
 
         return view("lecture", [

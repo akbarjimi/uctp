@@ -2,12 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Course;
 use App\Services\CspResolverInterface;
 use App\Services\DataServiceInterface;
 use Illuminate\Http\Request;
 
 class CourseController extends Controller
 {
+    public function index()
+    {
+        return \view("courses.index")->with(
+            "courses",
+            Course::with('type')->paginate()
+        );
+    }
+
     public function show(
         Request $request,
         DataServiceInterface $data,
